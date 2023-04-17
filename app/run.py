@@ -29,7 +29,7 @@ def tokenize(text):
 # load data
 engine = create_engine('sqlite:///../data/DisasterResponse.db')
 df = pd.read_sql_table('PolishedDisasterData', engine)
-print(df.head())
+category_names = df.columns[4:]
 # load model
 model = joblib.load("../models/classifier.pkl")
 print(model)
@@ -43,8 +43,15 @@ def index():
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
-    print("genre_counts", genre_counts)
-    print("genre_names", genre_names)
+    print('genre_counts: ', genre_counts)
+    print('genre_names: ', genre_names)
+    category_counts = []
+    for category in category_names:
+        if len(df[category].value_counts().to_list()) > 1 :
+            category_counts.append(df[category].value_counts().values[1])
+        else:
+            category_counts.append(0)
+    print("category_counts: ", category_counts)
     
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
@@ -64,6 +71,24 @@ def index():
                 },
                 'xaxis': {
                     'title': "Genre"
+                }
+            }
+        },
+                {
+            'data': [
+                Bar(
+                    x=[category.replace("_", " ") for category in category_names],
+                    y=category_counts
+                )
+            ],
+
+            'layout': {
+                'title': 'Distribution of Classes',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'title': "Class"
                 }
             }
         }

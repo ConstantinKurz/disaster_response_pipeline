@@ -75,7 +75,7 @@ def save_data(df, database_filename):
     Saves data in an sqlite DB which can used by a classification model subsequently.
     Input:
         df: Dataframe which should be stored in the DB.
-        database_filename: Filename of DB.
+        database_filename: Filename of DB
     '''
     print(50*"*")
     print(f"Saving data to database {database_filename} or replacing it...")
