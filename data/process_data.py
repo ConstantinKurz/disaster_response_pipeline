@@ -4,6 +4,15 @@ import numpy as np
 from sqlalchemy import create_engine
 
 def load_data(messages_filepath, categories_filepath):
+    '''
+    load_data
+    Loads messages and categories from csv file to dataframe , prints information and returns dataframe.
+    Input:
+        messages_filepath: Filepath to messages csv file
+        categories_filepath: Filepath to categories csv file
+    Returns:
+        df: Combined messages and categories dataframe
+    '''
     messages = pd.read_csv(messages_filepath)
     categories = pd.read_csv(categories_filepath)
     print(50*"*")
@@ -20,6 +29,14 @@ def load_data(messages_filepath, categories_filepath):
     return df
 
 def clean_data(df):
+    '''
+    clean_data
+    Cleans dataframe and prints information for later classification
+    Input:
+        df: Dataframe
+    Return: 
+        df: Cleaned dataframe
+    '''
     print(50*"*")
     print("Cleaning data...")
 
@@ -53,6 +70,13 @@ def clean_data(df):
     return df
 
 def save_data(df, database_filename):
+    '''
+    save_data
+    Saves data in an sqlite DB which can used by a classification model subsequently.
+    Input:
+        df: Dataframe which should be stored in the DB.
+        database_filename: Filename of DB.
+    '''
     print(50*"*")
     print(f"Saving data to database {database_filename} or replacing it...")
     engine = create_engine('sqlite:///' + database_filename)

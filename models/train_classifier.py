@@ -16,6 +16,16 @@ from sklearn.preprocessing import MultiLabelBinarizer
 
 
 def load_data(database_filepath):
+    '''
+    load_data
+    Loads data from an sqlite DB and splits it into X,Y dataarrays.
+    Input:
+        database_filepath: Filepath of DB.
+    Output:
+        X: Feature array.
+        Y: Multidimensional target array.
+        column_names: Target column-names.
+    '''
     print(50*"*")
     print(f"Create connection to DB {database_filepath}")
     engine = create_engine('sqlite:///' + database_filepath)
@@ -36,8 +46,9 @@ def load_data(database_filepath):
     X = X.drop(Y_nan.index)
     X = X.values
     Y = Y.values
+    column_names = df.columns[4:]
 
-    return X,Y, df.columns[4:]
+    return X,Y, column_names
 
 def tokenize(text):
     import nltk
@@ -54,6 +65,10 @@ def tokenize(text):
 
 
 def build_model():
+    '''
+    build_model
+    Sets up data pipeline and gridsearch via cross validation for classifying disaster messages.
+    '''
     pipeline = Pipeline([
                 ('text_pipeline', Pipeline([
                     ('vect', CountVectorizer(tokenizer=tokenize)),
@@ -71,7 +86,16 @@ def build_model():
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
-    
+    '''
+    evaluate_model
+    Evaluates model by predicting targets and prints statistic obervables.
+    Input:
+        model: Classification model
+        X_test: Test features
+        Y_test: Test targets. Multidimensional array
+        category_names: Names of classification categories.
+
+    '''
     Y_pred = model.predict(X_test)
     print(Y_test.shape)
     print(Y_pred.shape)
@@ -92,6 +116,13 @@ def evaluate_model(model, X_test, Y_test, category_names):
     print("F1-score: ", 2*(recall.mean()*accuracy.mean())/(recall.mean()+accuracy.mean()))
 
 def save_model(model, model_filepath):
+    '''
+    save_model
+    Saves model to pickle file
+    Input:
+        model: Classification model
+        model_filepath: Model-Filepath
+    '''
     with open(model_filepath, 'wb') as files:
         pickle.dump(model, files)
 
